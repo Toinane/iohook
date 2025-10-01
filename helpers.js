@@ -6,7 +6,7 @@ const fs = require('fs');
  * @return {Object}
  */
 function optionsFromPackage(attempts) {
-  attempts = attempts || 2;
+  attempts = attempts || 1;
   if (attempts > 5) {
     console.log("Can't resolve main package.json file");
     return {
@@ -15,7 +15,7 @@ function optionsFromPackage(attempts) {
       arches: [process.arch],
     };
   }
-  let mainPath = Array(attempts).join('../');
+  let mainPath = attempts === 1 ? '' : Array(attempts).join('../');
   try {
     const content = fs.readFileSync(
       path.join(__dirname, mainPath, 'package.json'),

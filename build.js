@@ -105,7 +105,7 @@ function cpGyp() {
   try {
     fs.unlinkSync(path.join(__dirname, 'binding.gyp'));
     fs.unlinkSync(path.join(__dirname, 'uiohook.gyp'));
-  } catch (e) {}
+  } catch (e) { }
   switch (process.platform) {
     case 'win32':
     case 'darwin':
@@ -180,6 +180,7 @@ function build(runtime, version, abi) {
 
     let proc = spawn(gypJsPath, args, {
       env: process.env,
+      shell: process.platform === 'win32',
     });
     proc.stdout.pipe(process.stdout);
     proc.stderr.pipe(process.stderr);
