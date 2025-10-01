@@ -3,7 +3,6 @@
 .scratch
 build
 builds
-docs/.vuepress/dist
 logs
 node_modules
 prebuilds

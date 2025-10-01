@@ -22,9 +22,6 @@
     "test": "jest",
     "lint:dry": "eslint --ignore-path .lintignore .",
     "lint:fix": "eslint --ignore-path .lintignore --fix . && prettier --ignore-path .lintignore --write .",
-    "docs:dev": "vuepress dev docs",
-    "docs:build": "vuepress build docs",
-    "docs:deploy": "npm run docs:build && gh-pages -d docs/.vuepress/dist/",
     "rebuild": "npm rebuild --runtime=electron --target=38.2.0 --disturl=https://electronjs.org/headers --abi=139"
   },
   "keywords": [
@@ -38,47 +35,14 @@
     "global keypress",
     "shortcut"
   ],
-  "lint-staged": {
-    "examples/**/*.{js,jsx,ts,tsx}": [
-      "eslint --fix",
-      "prettier --write"
-    ],
-    "docs/**/*.{js,jsx,ts,tsx}": [
-      "eslint --fix",
-      "prettier --write"
-    ],
-    "test/**/*.{js,jsx,ts,tsx}": [
-      "eslint --fix",
-      "prettier --write"
-    ],
-    "*.{js,jsx,ts,tsx}": [
-      "eslint --fix",
-      "prettier --write"
-    ]
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
-  },
-  "dependencies": {
-    "nugget": "^2.2.0",
-    "pump": "^3.0.3",
-    "rc": "^1.2.8",
-    "tar-fs": "^3.1.1"
-  },
+  "dependencies": {},
   "devDependencies": {
     "@types/node": "^24.6.1",
     "eslint": "^9.36.0",
     "eslint-config-prettier": "^10.1.8",
-    "eslint-plugin-only-warn": "^1.1.0",
     "eslint-plugin-prettier": "^5.5.4",
     "fs-extra": "^11.3.2",
-    "gh-pages": "^6.3.0",
-    "htmlhint": "^1.7.1",
-    "husky": "^9.1.7",
     "jest": "^30.2.0",
-    "lint-staged": "^16.2.3",
     "minimist": "^1.2.8",
     "nan": "^2.23.0",
     "node-abi": "^4.14.0",
@@ -86,8 +50,7 @@
     "prebuild": "^13.0.1",
     "prettier": "^3.6.2",
     "robotjs": "github:Toinane/robotjs",
-    "tar": "^7.5.1",
-    "vuepress": "^1.9.10"
+    "tar": "^7.5.1"
   },
   "supportedTargets": [
     [
