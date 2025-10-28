@@ -229,13 +229,14 @@ UIOHOOK_API screen_data* hook_create_screen_info(unsigned char *count) {
 UIOHOOK_API long int hook_get_auto_repeat_rate() {
 	bool successful = false;
 	long int value = -1;
-	unsigned int delay = 0, rate = 0;
+	unsigned int rate = 0;
 
 	// Check and make sure we could connect to the x server.
 	if (properties_disp != NULL) {
 		#ifdef USE_XKB
 		// Attempt to acquire the keyboard auto repeat rate using the XKB extension.
 		if (!successful) {
+			unsigned int delay = 0;
 			successful = XkbGetAutoRepeatRate(properties_disp, XkbUseCoreKbd, &delay, &rate);
 
 			if (successful) {
@@ -275,13 +276,14 @@ UIOHOOK_API long int hook_get_auto_repeat_rate() {
 UIOHOOK_API long int hook_get_auto_repeat_delay() {
 	bool successful = false;
 	long int value = -1;
-	unsigned int delay = 0, rate = 0;
+	unsigned int delay = 0;
 
 	// Check and make sure we could connect to the x server.
 	if (properties_disp != NULL) {
 		#ifdef USE_XKB
 		// Attempt to acquire the keyboard auto repeat rate using the XKB extension.
 		if (!successful) {
+			unsigned int rate = 0;
 			successful = XkbGetAutoRepeatRate(properties_disp, XkbUseCoreKbd, &delay, &rate);
 
 			if (successful) {

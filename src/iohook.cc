@@ -19,6 +19,9 @@ static bool sIsDebug = false;
 
 static HookProcessWorker* sIOHook = nullptr;
 
+// Helper macro to set object properties and handle the Maybe<bool> return value
+#define SET_PROP(obj, key, val) obj->Set(v8::Isolate::GetCurrent()->GetCurrentContext(), Nan::New(key).ToLocalChecked(), val).Check()
+
 static std::queue<uiohook_event> zqueue;
 
 // Native thread errors.
@@ -413,64 +416,64 @@ fHookExecution(nullptr)
 v8::Local<v8::Object> fillEventObject(uiohook_event event) {
   v8::Local<v8::Object> obj = Nan::New<v8::Object>();
 
-  obj->Set(v8::Isolate::GetCurrent()->GetCurrentContext(), Nan::New("type").ToLocalChecked(), Nan::New((uint16_t)event.type));
-  obj->Set(v8::Isolate::GetCurrent()->GetCurrentContext(), Nan::New("mask").ToLocalChecked(), Nan::New((uint16_t)event.mask));
-  obj->Set(v8::Isolate::GetCurrent()->GetCurrentContext(), Nan::New("time").ToLocalChecked(), Nan::New((uint16_t)event.time));
+  SET_PROP(obj, "type", Nan::New((uint16_t)event.type));
+  SET_PROP(obj, "mask", Nan::New((uint16_t)event.mask));
+  SET_PROP(obj, "time", Nan::New((uint16_t)event.time));
 
   if ((event.type >= EVENT_KEY_TYPED) && (event.type <= EVENT_KEY_RELEASED)) {
     v8::Local<v8::Object> keyboard = Nan::New<v8::Object>();
 
     if (event.data.keyboard.keycode == VC_SHIFT_L || event.data.keyboard.keycode == VC_SHIFT_R) {
-      keyboard->Set(v8::Isolate::GetCurrent()->GetCurrentContext(), Nan::New("shiftKey").ToLocalChecked(), Nan::New(true));
+      SET_PROP(keyboard, "shiftKey", Nan::New(true));
     } else {
-      keyboard->Set(v8::Isolate::GetCurrent()->GetCurrentContext(), Nan::New("shiftKey").ToLocalChecked(), Nan::New(false));
+      SET_PROP(keyboard, "shiftKey", Nan::New(false));
     }
 
     if (event.data.keyboard.keycode == VC_ALT_L || event.data.keyboard.keycode == VC_ALT_R) {
-      keyboard->Set(v8::Isolate::GetCurrent()->GetCurrentContext(), Nan::New("altKey").ToLocalChecked(), Nan::New(true));
+      SET_PROP(keyboard, "altKey", Nan::New(true));
     } else {
-      keyboard->Set(v8::Isolate::GetCurrent()->GetCurrentContext(), Nan::New("altKey").ToLocalChecked(), Nan::New(false));
+      SET_PROP(keyboard, "altKey", Nan::New(false));
     }
 
     if (event.data.keyboard.keycode == VC_CONTROL_L || event.data.keyboard.keycode == VC_CONTROL_R) {
-      keyboard->Set(v8::Isolate::GetCurrent()->GetCurrentContext(), Nan::New("ctrlKey").ToLocalChecked(), Nan::New(true));
+      SET_PROP(keyboard, "ctrlKey", Nan::New(true));
     } else {
-      keyboard->Set(v8::Isolate::GetCurrent()->GetCurrentContext(), Nan::New("ctrlKey").ToLocalChecked(), Nan::New(false));
+      SET_PROP(keyboard, "ctrlKey", Nan::New(false));
     }
 
     if (event.data.keyboard.keycode == VC_META_L || event.data.keyboard.keycode == VC_META_R) {
-      keyboard->Set(v8::Isolate::GetCurrent()->GetCurrentContext(), Nan::New("metaKey").ToLocalChecked(), Nan::New(true));
+      SET_PROP(keyboard, "metaKey", Nan::New(true));
     } else {
-      keyboard->Set(v8::Isolate::GetCurrent()->GetCurrentContext(), Nan::New("metaKey").ToLocalChecked(), Nan::New(false));
+      SET_PROP(keyboard, "metaKey", Nan::New(false));
     }
 
     if (event.type == EVENT_KEY_TYPED) {
-      keyboard->Set(v8::Isolate::GetCurrent()->GetCurrentContext(), Nan::New("keychar").ToLocalChecked(), Nan::New((uint16_t)event.data.keyboard.keychar));
+      SET_PROP(keyboard, "keychar", Nan::New((uint16_t)event.data.keyboard.keychar));
     }
 
-    keyboard->Set(v8::Isolate::GetCurrent()->GetCurrentContext(), Nan::New("keycode").ToLocalChecked(), Nan::New((uint16_t)event.data.keyboard.keycode));
-    keyboard->Set(v8::Isolate::GetCurrent()->GetCurrentContext(), Nan::New("rawcode").ToLocalChecked(), Nan::New((uint16_t)event.data.keyboard.rawcode));
+    SET_PROP(keyboard, "keycode", Nan::New((uint16_t)event.data.keyboard.keycode));
+    SET_PROP(keyboard, "rawcode", Nan::New((uint16_t)event.data.keyboard.rawcode));
 
-    obj->Set(v8::Isolate::GetCurrent()->GetCurrentContext(), Nan::New("keyboard").ToLocalChecked(), keyboard);
+    SET_PROP(obj, "keyboard", keyboard);
   } else if ((event.type >= EVENT_MOUSE_CLICKED) && (event.type < EVENT_MOUSE_WHEEL)) {
     v8::Local<v8::Object> mouse = Nan::New<v8::Object>();
-    mouse->Set(v8::Isolate::GetCurrent()->GetCurrentContext(), Nan::New("button").ToLocalChecked(), Nan::New((uint16_t)event.data.mouse.button));
-    mouse->Set(v8::Isolate::GetCurrent()->GetCurrentContext(), Nan::New("clicks").ToLocalChecked(), Nan::New((uint16_t)event.data.mouse.clicks));
-    mouse->Set(v8::Isolate::GetCurrent()->GetCurrentContext(), Nan::New("x").ToLocalChecked(), Nan::New((int16_t)event.data.mouse.x));
-    mouse->Set(v8::Isolate::GetCurrent()->GetCurrentContext(), Nan::New("y").ToLocalChecked(), Nan::New((int16_t)event.data.mouse.y));
+    SET_PROP(mouse, "button", Nan::New((uint16_t)event.data.mouse.button));
+    SET_PROP(mouse, "clicks", Nan::New((uint16_t)event.data.mouse.clicks));
+    SET_PROP(mouse, "x", Nan::New((int16_t)event.data.mouse.x));
+    SET_PROP(mouse, "y", Nan::New((int16_t)event.data.mouse.y));
 
-    obj->Set(v8::Isolate::GetCurrent()->GetCurrentContext(), Nan::New("mouse").ToLocalChecked(), mouse);
+    SET_PROP(obj, "mouse", mouse);
   } else if (event.type == EVENT_MOUSE_WHEEL) {
     v8::Local<v8::Object> wheel = Nan::New<v8::Object>();
-    wheel->Set(v8::Isolate::GetCurrent()->GetCurrentContext(), Nan::New("amount").ToLocalChecked(), Nan::New((uint16_t)event.data.wheel.amount));
-    wheel->Set(v8::Isolate::GetCurrent()->GetCurrentContext(), Nan::New("clicks").ToLocalChecked(), Nan::New((uint16_t)event.data.wheel.clicks));
-    wheel->Set(v8::Isolate::GetCurrent()->GetCurrentContext(), Nan::New("direction").ToLocalChecked(), Nan::New((int16_t)event.data.wheel.direction));
-    wheel->Set(v8::Isolate::GetCurrent()->GetCurrentContext(), Nan::New("rotation").ToLocalChecked(), Nan::New((int16_t)event.data.wheel.rotation));
-    wheel->Set(v8::Isolate::GetCurrent()->GetCurrentContext(), Nan::New("type").ToLocalChecked(), Nan::New((int16_t)event.data.wheel.type));
-    wheel->Set(v8::Isolate::GetCurrent()->GetCurrentContext(), Nan::New("x").ToLocalChecked(), Nan::New((int16_t)event.data.wheel.x));
-    wheel->Set(v8::Isolate::GetCurrent()->GetCurrentContext(), Nan::New("y").ToLocalChecked(), Nan::New((int16_t)event.data.wheel.y));
+    SET_PROP(wheel, "amount", Nan::New((uint16_t)event.data.wheel.amount));
+    SET_PROP(wheel, "clicks", Nan::New((uint16_t)event.data.wheel.clicks));
+    SET_PROP(wheel, "direction", Nan::New((int16_t)event.data.wheel.direction));
+    SET_PROP(wheel, "rotation", Nan::New((int16_t)event.data.wheel.rotation));
+    SET_PROP(wheel, "type", Nan::New((int16_t)event.data.wheel.type));
+    SET_PROP(wheel, "x", Nan::New((int16_t)event.data.wheel.x));
+    SET_PROP(wheel, "y", Nan::New((int16_t)event.data.wheel.y));
 
-    obj->Set(v8::Isolate::GetCurrent()->GetCurrentContext(), Nan::New("wheel").ToLocalChecked(), wheel);
+    SET_PROP(obj, "wheel", wheel);
   }
   return obj;
 }

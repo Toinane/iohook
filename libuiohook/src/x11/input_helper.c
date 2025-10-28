@@ -1659,7 +1659,7 @@ KeyCode scancode_to_keycode(uint16_t scancode) {
 #ifdef USE_XKBCOMMON
 struct xkb_state * create_xkb_state(struct xkb_context *context, xcb_connection_t *connection) {
 	struct xkb_keymap *keymap;
-	struct xkb_state *state;
+	struct xkb_state *state = NULL;
 
 	int32_t device_id = xkb_x11_get_core_keyboard_device_id(connection);
 	if (device_id >= 0) {
